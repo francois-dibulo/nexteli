@@ -1,8 +1,6 @@
 /**
  * TODO: 
  * [ ] Delete itinerary
- * [ ] Show departure time
- * [ ] Show trip duration
  * [ ] Update departure countdown
  * [ ] Loading animation
  */
@@ -331,6 +329,13 @@ function init() {
 
 		let time = tmplNode.querySelector(".result-time");
 		time.textContent = connection.delta < 60000 ? "now" : connection.delta_str + "'";
+
+		let hour = tmplNode.querySelector('.result-departure-time');
+		var departureTime = new Date(connection.departure.date);
+		hour.textContent = departureTime.getHours() + ":" + departureTime.getMinutes();
+
+		let duration = tmplNode.querySelector('.result-duration');
+		duration.textContent = "Duration: " + getMinutesHuman(connection.duration) + " mins";
 
 		if (connection.departure.platform) {
 			let platform = tmplNode.querySelector(".result-platform");

@@ -117,13 +117,17 @@
 
 <template id="connection-item">
 	<div class="connection-item bg-white p-5-vmin w-full flex flex-row align-center justify-around box-shadow-1 font-black">
-		<img src="" class="result-icon">
-		<div class="flex flex-col text-center text-5-vmin w-55-vmin">
+		<div class="flex flex-col text-center">
+			<img src="" class="result-icon mb-1-vmin">
 			<div class="result-line"></div>
-			<div><span class="result-platform"></span></div>
+		</div>
+		<div class="flex flex-col text-center text-5-vmin w-55-vmin">
+			<div class="result-platform"></div>
+			<div class="result-duration text-4-vmin"></div>
 		</div>
 		<div class="text-center lh-8-vmin">
 			<div class="result-time font-blue-dark font-700 text-10-vmin"></div>
+			<div class="result-departure-time relative" style="left: -2px;"></div>
 		</div>
 	</div>
 </template>
