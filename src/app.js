@@ -96,6 +96,17 @@ class StationForm {
 		this.toggleSubmitButton(false);
 		this.form['destination'].value = '';
 		this.form['departure'].value = '';
+
+		var lists = [
+			document.getElementById('departureCandidatesList'),
+			document.getElementById('destinationCandidatesList')
+		];
+
+		for (var i = 0; i < lists.length; ++i) {
+			var node = lists[i];
+			node.classList.remove('hidden');
+			node.innerHTML = '';
+		}
 	}
 
 	setDeparture(value) {
@@ -226,7 +237,9 @@ function init() {
 			(function(candidate) {
 				li.addEventListener("click", function() {
 					addStation(candidate, isDeparture);
-					li.parentNode.classList.add("hidden");
+					if (li.parentNode) {
+						li.parentNode.classList.add("hidden");
+					}
 				});
 			})(candidate);
 		}
@@ -338,8 +351,11 @@ function init() {
 		const destination = e.target.destination.value.trim();
 
 		if (departure && destination) {
-			searchStations(departure, destination);
-			stationForm.toggleSubmitButton(true);
+			searchStations(departure, destination).then((success) => {
+				if (success) {
+					stationForm.toggleSubmitButton(true);
+				}
+			});
 		}
 
 		e.preventDefault();

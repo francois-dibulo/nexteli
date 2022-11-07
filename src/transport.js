@@ -40,7 +40,7 @@ function findNextDeparture(itinerary) {
 				// Duration in seconds
 				duration: connection.to.arrivalTimestamp - connection.from.departureTimestamp,
 				transfers: connection.transfers,
-				line: connection.products.join(","), // ['S2']
+				line: connection.products.join(", "), // ['S2']
 				departure: {
 					date: connection.from.departure,
 					ts: departureTimestamp,
