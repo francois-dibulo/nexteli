@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;900&display=swap" rel="stylesheet">
+	<title>Find your next train, tram, bus</title>
+	<link rel="stylesheet" type="text/css" href="styles/app.css">
+</head>
+<body class="state-search">
+
+<div id="view-search" class="view full-vp-min flex flex-col justify-center bg-red font-white">
+
+	<div class="margin-auto w-content">
+		<h1>Your next ride ...</h1>
+
+		<div class="space-lg"></div>
+
+		<form id="form-search">
+
+			<label class="display-block font-300 mb-05-rem">From:</label>
+			<input type="text" 
+				name="departure"
+				placeholder="Zürich Oerlikon"
+				class="border-round-8-px bg-white"
+				required 
+				autocomplete="off">
+
+			<ul
+				id="departureCandidatesList" 
+				class="ul-no-style mt-05-rem">
+			</ul>
+
+			<div class="space-lg"></div>
+
+			<label class="display-block font-300 mb-05-rem">To:</label>
+			<input type="text"
+				name="destination" 
+				placeholder="Zürich HB"
+				class="border-round-8-px bg-white" 
+				required
+				autocomplete="off">
+
+			<ul id="destinationCandidatesList" class="ul-no-style mt-05-rem"></ul>
+
+			<div class="space-lg-2"></div>
+			<button name="submit" class="primary" type="submit">Search</button>
+		</form>
+
+	</div>
+
+</div>
+
+<div id="view-result" class="view full-vp-min flex flex-col bg-blue">
+
+	<div class="full-vp-min flex flex-col justify-between">
+		
+		<div>
+			<div class="space-lg"></div>
+			<div class="margin-auto w-content">
+				<h1 class="font-white">Your next ride ...</h1>
+			</div>
+			<div class="space-lg"></div>
+
+			<ul 
+				id="result-list"
+				class="ul-no-style">
+			</ul>
+		</div>
+
+		<div class="w-full flex flex-col justify-center">
+			<div class="space-lg"></div>
+			<button id="btn-go-form" class="margin-auto w-content bg-blue-light font-white">Add ride</button>
+			<div class="space-lg"></div>
+		</div>
+	</div>
+	
+</div>
+
+<template id="candidate-list-item">
+	<li class="candidate-item bg-white font-black p-2-vmin cursor-pointer mb-1px flex flex-row align-center">
+		<img src="" alt="" class="candidate-icon"> <span class="candidate-name"></span>
+	</li>
+</template>
+
+<template id="result-list-item">
+	<li 
+		class="result-item flex flex-col align-center justify-around mb-8-vmin relative">
+		
+		<div class="margin-auto w-content flex flex-row justify-between font-700 font-white mb-1-vmin text-4-vmin">
+			<div class="result-departure"></div>
+			<div>&#x2192;</div>
+			<div class="result-destination"></div>
+		</div>
+
+		<div class="relative w-full ml-10-per">
+			<div 
+				class="result-connections-list w-full flex flex-row gap-1vmin overflow-x-auto pr-10-per scroll-smooth">
+				<!-- Rendering connection cars -->
+			</div>
+			<div 
+				class="connection-nav absolute top-0 right-0 bottom-0 flex flex-col justify-center align-center"
+				onclick="onConnectionListNavInput(this, 1)">
+				<!-- &#8250; -->
+			</div>
+			<div 
+				class="connection-nav absolute top-0 left-0 bottom-0 flex flex-col justify-center align-center"
+				onclick="onConnectionListNavInput(this, -1)">
+				<!-- &#8249; -->
+			</div>
+		</div>
+		<div class="btn-remove-item hidden">X</div>
+	</li>
+</template>
+
+<template id="connection-item">
+	<div class="connection-item bg-white p-5-vmin w-full flex flex-row align-center justify-around box-shadow-1 font-black">
+		<img src="" class="result-icon">
+		<div class="flex flex-col text-center text-5-vmin w-55-vmin">
+			<div class="result-line"></div>
+			<div><span class="result-platform"></span></div>
+		</div>
+		<div class="text-center lh-8-vmin">
+			<div class="result-time font-blue-dark font-700 text-10-vmin"></div>
+		</div>
+	</div>
+</template>
+
+<script type="text/javascript" src="src/utils.js"></script>
+<script type="text/javascript" src="src/transport.js"></script>
+<script type="text/javascript" src="src/view-manager.js"></script>
+<script type="text/javascript" src="src/app.js"></script>
+
+</body>
+</html>
