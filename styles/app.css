@@ -94,7 +94,7 @@ input {
 button {
 	cursor: pointer;
 	border: 0;
-	background: #FFFFFF;
+	background: none;
 	padding-left: 4rem;
 	padding-right: 4rem;
 	border-radius: 50px;
@@ -109,6 +109,11 @@ button {
 .primary {
 	color: #FFF;
 	background: #8bc34a;
+}
+
+.warn {
+	color: #FFF;
+	background: #ff9800;
 }
 
 .state-result .state-result-hidden {

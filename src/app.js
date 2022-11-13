@@ -146,6 +146,14 @@ function init() {
 		ViewManager.show('view-search');
 	}
 
+	function clearAll() {
+		const conf = confirm('Do you want to delete all your rides?');
+		if (conf) {
+			localStorage.removeItem(STORAGE_KEY);
+			showForm();
+		}
+	}
+
 	function persistStorage() {
 		var serializedItineraries = [];
 		for (var i = 0; i < itineraries.length; i++) {
@@ -404,6 +412,8 @@ function init() {
 	});
 
 	document.getElementById('btn-go-form').addEventListener('click', showForm);
+	document.getElementById('btn-clear-all').addEventListener('click', clearAll);
+
 
 	ViewManager.init();
 	if (!restoreStorage()) {
