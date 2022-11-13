@@ -150,6 +150,7 @@ function init() {
 		const conf = confirm('Do you want to delete all your rides?');
 		if (conf) {
 			localStorage.removeItem(STORAGE_KEY);
+			itineraries = [];
 			showForm();
 		}
 	}
