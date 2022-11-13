@@ -126,7 +126,7 @@ class StationForm {
 function onConnectionListNavInput(e, direction) {
 	var listEle = e.parentNode.querySelector('.result-connections-list');
 	//listEle.children[1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-	var distance = listEle.scrollLeft + (listEle.children[0].offsetWidth * direction);
+	var distance = listEle.scrollLeft + (listEle.children[1].offsetWidth * direction);
 	listEle.scrollTo(distance, 0);
 }
 
@@ -220,10 +220,13 @@ function init() {
 			}
 		}
 		persistStorage();
+
+		if (!itineraries.length) {
+			showForm();
+		}
 	}
 
 	function searchStations(departure, destination) {
-		console.log("searchStations", departure, destination)
 
 		return new Promise((resolve) => {
 
@@ -326,7 +329,20 @@ function init() {
 
 		li.setAttribute('data-id', itinerary.getID());
 
-		tmplNode.querySelector(".btn-remove-item").addEventListener('click', (e) => {
+		let departure = tmplNode.querySelector(".result-departure");
+		departure.textContent = itinerary.departure.name;
+
+		let destination = tmplNode.querySelector(".result-destination");
+		destination.textContent = itinerary.destination.name;
+
+		let connectionsList = tmplNode.querySelector(".result-connections-list");
+
+		let removeConnectionButton = document.createElement('div');
+		removeConnectionButton.classList.add('btn-remove-itinererary', 'flex', 'flex-col', 'justify-center', 'font-700', 'font-white');
+		removeConnectionButton.innerHTML = "X";
+		connectionsList.appendChild(removeConnectionButton);
+
+		removeConnectionButton.addEventListener('click', () => {
 			var conf = confirm("Do you want to remove this item?");
 			if (conf) {
 				var id = li.getAttribute("data-id");
@@ -336,16 +352,6 @@ function init() {
 				}
 			}
 		});
-
-		let departure = tmplNode.querySelector(".result-departure");
-		departure.textContent = itinerary.departure.name;
-
-		let destination = tmplNode.querySelector(".result-destination");
-		destination.textContent = itinerary.destination.name;
-
-		let connectionsList = tmplNode.querySelector(".result-connections-list");
-
-		console.log("connectionsList", connectionsList)
 
 		for (var i = 0; i < itinerary.connections.length; i++) {
 			if (itinerary.connections[i].delta > 0) {
@@ -357,6 +363,33 @@ function init() {
 		}
 
 		document.getElementById('result-list').appendChild(tmplNode);
+
+		// Scroll further, to hide remove button on the left
+		setTimeout(() => {
+			var listEle = tmplNode; //e.parentNode.querySelector('.result-connections-list');
+			//listEle.children[1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+			var distance = removeConnectionButton.offsetWidth;// listEle.scrollLeft + (listEle.children[1].offsetWidth * direction);
+			connectionsList.scrollTo(distance, 0);
+		}, 100);
+
+		// We need to check if the remove button is visible. If yes, then we need to hide the
+		// nav-prev button, so that we can actually click on it (:
+		let options = {
+		  root: connectionsList,
+		  rootMargin: '0px',
+		  threshold: 0.5
+		};
+
+		let observer = new IntersectionObserver((entries, observer) => {
+			entries.forEach((entry) => {
+				var prevEle = entry.target.parentNode.parentNode.querySelector('.connection-nav-prev');
+				if (prevEle) {
+					prevEle.classList.toggle('hidden', entry.isIntersecting);
+				}
+			});
+		}, options);
+
+		observer.observe(removeConnectionButton);
 	}
 
 	function renderConnectionItem(itinerary, connection) {
@@ -413,7 +446,7 @@ function init() {
 	});
 
 	document.getElementById('btn-go-form').addEventListener('click', showForm);
-	document.getElementById('btn-clear-all').addEventListener('click', clearAll);
+	//document.getElementById('btn-clear-all').addEventListener('click', clearAll);
 
 
 	ViewManager.init();

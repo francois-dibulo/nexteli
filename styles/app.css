@@ -148,6 +148,12 @@ button {
 	margin-right: 1vmin;
 }
 
+.btn-remove-itinererary {
+	padding: 0 5vmin;
+	font-size: 10vmin;
+	background: #ff847b;
+}
+
 @media(max-width: 700px) {
 	button {
 		width: 100%;
