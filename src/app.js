@@ -30,6 +30,7 @@ class Itinerary {
 		this.departure = departure || null;
 		this.connections = [];
 		this.lastCachedTs = 0;
+		this.createdTs = Date.now();
 	}
 
 	getID() {
@@ -38,6 +39,7 @@ class Itinerary {
 
 	serialize() {
 		return {
+			created: this.createdTs,
 			destination: this.destination,
 			departure: this.departure,
 		};
@@ -159,16 +161,25 @@ function init() {
 			var data = localStorage.getItem(STORAGE_KEY);
 		  if (data) {
 		    storageItineraries = JSON.parse(data);
-		    for (var i = 0; i < storageItineraries.length; i++) {
-		    	var it = storageItineraries[i];
-		    	const itineraryInstance = new Itinerary(it.departure, it.destination);
-		    	itineraries.push(itineraryInstance);
-		    	onStationsSelected(itineraryInstance);
-		    }
-		    console.info("Found localStorage", storageItineraries);
-		    if (itineraries.length) {
-					success = true;
-		    }
+		    if (storageItineraries && storageItineraries.length) {
+
+		    	storageItineraries.sort((a, b) => {
+		    		return a.createdTs - b.createdTs;
+		    	});
+
+			    for (var i = 0; i < storageItineraries.length; i++) {
+			    	var it = storageItineraries[i];
+			    	const itineraryInstance = new Itinerary(it.departure, it.destination);
+			    	itineraries.push(itineraryInstance);
+			    	onStationsSelected(itineraryInstance);
+			    }
+
+			    console.info("Found localStorage", storageItineraries);
+			    if (itineraries.length) {
+						success = true;
+			    }
+
+			  }
 		  }
 		} catch (e) {
 			console.error(e);
@@ -188,24 +199,32 @@ function init() {
 	}
 
 	function searchStations(departure, destination) {
-		if (!departure || !destination) return;
+		console.log("searchStations", departure, destination)
 
-		findStationsCandidates(departure).then((departureCandidates) => {
-				// { stations: [ { id, name, score, coordinate, icon } ] }
+		return new Promise((resolve) => {
 
-				findStationsCandidates(destination).then((destinationCandidates) => {
+			if (!departure || !destination) return resolve(false);
 
-					console.info("Candidates", departureCandidates, destinationCandidates);
+			findStationsCandidates(departure).then((departureCandidates) => {
+					// { stations: [ { id, name, score, coordinate, icon } ] }
 
-					if (departureCandidates && departureCandidates.length) {
-						fillCandidatesList(document.getElementById('departureCandidatesList'), departureCandidates, true);
-					}
+					findStationsCandidates(destination).then((destinationCandidates) => {
 
-					if (departureCandidates && departureCandidates.length) {
-						fillCandidatesList(document.getElementById('destinationCandidatesList'), destinationCandidates, false);
-					}
+						console.info("Candidates", departureCandidates, destinationCandidates);
 
-				});
+						if (departureCandidates && departureCandidates.length) {
+							fillCandidatesList(document.getElementById('departureCandidatesList'), departureCandidates, true);
+						}
+
+						if (departureCandidates && departureCandidates.length) {
+							fillCandidatesList(document.getElementById('destinationCandidatesList'), destinationCandidates, false);
+						}
+
+						resolve(true);
+
+					});
+			});
+
 		});
 
 	}
@@ -356,11 +375,14 @@ function init() {
 		const destination = e.target.destination.value.trim();
 
 		if (departure && destination) {
-			searchStations(departure, destination).then((success) => {
-				if (success) {
-					stationForm.toggleSubmitButton(true);
-				}
-			});
+			searchStations(departure, destination)
+				.then((success) => {
+					if (success) {
+						stationForm.toggleSubmitButton(true);
+					} else {
+						console.warn('Could not find stations', departure, destination);
+					}
+				}).catch((e) => console.warn(e));
 		}
 
 		e.preventDefault();
