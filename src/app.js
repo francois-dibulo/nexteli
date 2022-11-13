@@ -25,12 +25,12 @@ class StationComponentElement extends HTMLElement {
 
 class Itinerary {
 
-	constructor(departure, destination) {
+	constructor(departure, destination, createdTs) {
 		this.destination = destination || null;
 		this.departure = departure || null;
+		this.createdTs = createdTs || Date.now();
 		this.connections = [];
 		this.lastCachedTs = 0;
-		this.createdTs = Date.now();
 	}
 
 	getID() {
@@ -149,13 +149,15 @@ function init() {
 	function persistStorage() {
 		var serializedItineraries = [];
 		for (var i = 0; i < itineraries.length; i++) {
-			serializedItineraries.push(itineraries[i].serialize());
+			const serializedItinerary = itineraries[i].serialize();
+			console.log("persist", serializedItinerary);
+			serializedItineraries.push(serializedItinerary);
 		}
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedItineraries));
 	}
 
 	function restoreStorage() {
-		// localStorage.removeItem(STORAGE_KEY);
+		//localStorage.removeItem(STORAGE_KEY);
 		var success = false;
 		try {
 			var data = localStorage.getItem(STORAGE_KEY);
@@ -164,17 +166,30 @@ function init() {
 		    if (storageItineraries && storageItineraries.length) {
 
 		    	storageItineraries.sort((a, b) => {
-		    		return a.createdTs - b.createdTs;
+		    		return a.created - b.created;
 		    	});
 
-			    for (var i = 0; i < storageItineraries.length; i++) {
-			    	var it = storageItineraries[i];
-			    	const itineraryInstance = new Itinerary(it.departure, it.destination);
-			    	itineraries.push(itineraryInstance);
-			    	onStationsSelected(itineraryInstance);
-			    }
+		    	for (var i = 0; i < storageItineraries.length; i++) {
+		    		var it = storageItineraries[i];
+		    		const itineraryInstance = new Itinerary(it.departure, it.destination, it.created);
+		    		itineraries.push(itineraryInstance);
+		    	}
 
-			    console.info("Found localStorage", storageItineraries);
+		    	// We need a Queue, otherwise the list of itineraries is not in order of the
+		    	// createdTs, but of which connections are loaded first
+		    	var itinerariesQueue = itineraries.slice();
+		    	var workQueue = function workQueue(itineraryInstance) {
+		    		if (!itineraryInstance) {
+		    			return;
+		    		}
+
+		    		onStationsSelected(itineraryInstance).then(() => {
+		    			workQueue(itinerariesQueue.shift());
+		    		});
+		    	};
+
+		    	workQueue(itinerariesQueue.shift());
+
 			    if (itineraries.length) {
 						success = true;
 			    }
@@ -283,10 +298,9 @@ function init() {
 	function onStationsSelected(currentItinerary) {
 		ViewManager.show('view-result');
 
-		currentItinerary.updateConnections(currentItinerary).then(() => {
-
-			renderConnectionsList(currentItinerary)
-
+		return currentItinerary.updateConnections(currentItinerary)
+			.then(() => {
+				renderConnectionsList(currentItinerary);
 			// currentItinerary.getNextConnection().then((next) => {
 			// 	if (next) {
 			// 		renderConnectionItem(currentItinerary, next);
