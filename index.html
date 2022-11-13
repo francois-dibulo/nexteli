@@ -99,7 +99,7 @@
 		<div class="relative w-full ml-10-per">
 			<div 
 				class="result-connections-list w-full flex flex-row gap-1vmin overflow-x-auto pr-10-per scroll-smooth">
-				<!-- Rendering connection cars -->
+				<!-- Rendering connection items -->
 			</div>
 			<div 
 				class="connection-nav absolute top-0 right-0 bottom-0 flex flex-col justify-center align-center"
@@ -117,16 +117,16 @@
 </template>
 
 <template id="connection-item">
-	<div class="connection-item bg-white p-5-vmin w-full flex flex-row align-center justify-around box-shadow-1 font-black">
-		<div class="flex flex-col text-center">
+	<div class="connection-item w-full flex flex-row align-center font-black">
+		<div class="min-width-25-vmin flex flex-col align-center pv-5-vmin align-self-stretch bg-white">
 			<img src="" class="result-icon mb-1-vmin">
-			<div class="result-line"></div>
+			<div class="result-line font-700"></div>
 		</div>
-		<div class="flex flex-col text-center text-5-vmin w-55-vmin justify-center">
+		<div class="flex flex-col text-center text-5-vmin w-55-vmin justify-center pv-5-vmin align-self-stretch bg-white">
 			<div class="result-platform"></div>
 			<div class="result-duration text-4-vmin"></div>
 		</div>
-		<div class="text-center flex flex-col justify-center">
+		<div class="min-width-25-vmin text-center flex flex-col justify-center pv-5-vmin align-self-stretch bg-white">
 			<div class="result-time font-blue-dark font-700 text-10-vmin"></div>
 			<div class="result-departure-time relative" style="left: -2px;"></div>
 		</div>

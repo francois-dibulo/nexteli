@@ -26,6 +26,7 @@ body {
 .justify-around { justify-content: space-around; }
 .justify-between { justify-content: space-between; }
 .align-center { align-items: center; }
+.align-self-stretch { align-self: stretch; }
 .text-center { text-align: center; }
 .gap-1vmin { gap: 1vmin; }
 .font-300 { font-weight: 300; }
@@ -40,6 +41,7 @@ body {
 .w-content { width: 70%; }
 .w-full { width: 100%; }
 .w-55-vmin { width: 55vmin; }
+.min-width-25-vmin { min-width: 25vmin; }
 .hidden { display: none; }
 .lh-15 { line-height: 1.5 }
 .lh-8-vmin { line-height: 8vmin; }
@@ -60,6 +62,7 @@ input { width: 100%; border: 0; padding:0; margin: 0; }
 .mb-1px { margin-bottom: 1px; }
 .mb-05-rem { margin-bottom: 0.5rem; }
 .ml-10-per { margin-left: 10%; }
+.pv-5-vmin { padding: 5vmin 0; }
 .p-2-vmin { padding: 2vmin; }
 .p-5-vmin { padding: 5vmin; }
 .pr-10-per { padding-right: 10% };
