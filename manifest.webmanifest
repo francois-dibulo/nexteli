@@ -3,16 +3,16 @@
   "name": "Nexteli: Display your next ride",
   "icons": [
     {
-      "src": "/assets/train.png",
+      "src": "assets/train.png",
       "type": "image/png",
       "sizes": "512x512"
-    },
+    }
   ],
   "id": "/?source=pwa",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "background_color": "#4763ff",
   "display": "fullscreen",
   "scope": "/",
   "theme_color": "#4763ff",
-  "description": "No need to memorize your daily timetables. Display your next public transportation rides - in Switzerland.",
+  "description": "No need to memorize your daily timetables. Display your next public transportation rides - in Switzerland."
 }

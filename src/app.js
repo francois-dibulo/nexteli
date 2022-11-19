@@ -1,6 +1,5 @@
 /**
  * TODO: 
- * [ ] Delete itinerary
  * [ ] Update departure countdown
  * [ ] Loading animation
  */
@@ -445,10 +444,30 @@ function init() {
 		return false;
 	});
 
+	function setupServiceWorker() {
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('beforeinstallprompt', (event) => {
+			  // Prevent the mini-infobar from appearing on mobile.
+			  event.preventDefault();
+			  console.log('👍', 'beforeinstallprompt', event);
+			  // Stash the event so it can be triggered later.
+			  window.deferredPrompt = event;
+			  // Remove the 'hidden' class from the install button container.
+			  //divInstall.classList.toggle('hidden', false);
+			});
+
+
+		  navigator.serviceWorker.register('service-worker.js')
+		  	.then(() => {
+        	console.log("Install succeeded")
+      	}).catch((e) => console.error(e));
+		  console.info("Register service worker");
+		}
+	}
+
 	document.getElementById('btn-go-form').addEventListener('click', showForm);
-	//document.getElementById('btn-clear-all').addEventListener('click', clearAll);
 
-
+	setupServiceWorker();
 	ViewManager.init();
 	if (!restoreStorage()) {
 		showForm();
