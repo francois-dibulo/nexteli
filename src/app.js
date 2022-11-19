@@ -456,11 +456,10 @@ function init() {
 			  //divInstall.classList.toggle('hidden', false);
 			});
 
+		  navigator.serviceWorker.register('./service-worker.js')
+		  	.then(() => console.log("Install succeeded"))
+      	.catch((e) => console.error(e));
 
-		  navigator.serviceWorker.register('service-worker.js')
-		  	.then(() => {
-        	console.log("Install succeeded")
-      	}).catch((e) => console.error(e));
 		  console.info("Register service worker");
 		}
 	}
