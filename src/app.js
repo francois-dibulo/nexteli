@@ -446,6 +446,11 @@ function init() {
 
 	function setupServiceWorker() {
 		if ('serviceWorker' in navigator) {
+
+			if (isMobile()) {
+				document.getElementById("pwa-install-app-container").classList.remove("hidden");
+			}
+
 			window.addEventListener('beforeinstallprompt', (event) => {
 			  // Prevent the mini-infobar from appearing on mobile.
 			  event.preventDefault();
@@ -456,11 +461,19 @@ function init() {
 			  //divInstall.classList.toggle('hidden', false);
 			});
 
+			document.getElementById('btn-install-app').addEventListener('click', async () => {
+        if (window.deferredPrompt !== null) {
+          window.deferredPrompt.prompt();
+          const { outcome } = await window.deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+              window.deferredPrompt = null;
+          }
+        }
+	    });
+
 		  navigator.serviceWorker.register('./service-worker.js')
 		  	.then(() => console.log("Install succeeded"))
       	.catch((e) => console.error(e));
-
-		  console.info("Register service worker");
 		}
 	}
 
