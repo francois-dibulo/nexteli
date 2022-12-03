@@ -75,7 +75,7 @@ class DepartureSlotElement extends HTMLElement {
   }
 
   removeConnection() {
-    updateItinerary();
+    updateItinerary(this.itinerary);
     this.remove();
   }
 
