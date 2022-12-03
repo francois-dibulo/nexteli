@@ -326,6 +326,7 @@ function setupServiceWorker() {
         const { outcome } = await window.deferredPrompt.userChoice;
         if (outcome === 'accepted') {
             window.deferredPrompt = null;
+            document.getElementById("pwa-install-app-container").classList.add("hidden");
         }
       }
     });
