@@ -13,22 +13,38 @@ function getFormatedSeconds(input_seconds) {
   return zero(minutes) + ':' + zero(seconds);
 }
 
+/**
+ * Prepends a zero for all numbers below 9
+ * @example 5 -> "05", 12 -> "12"
+ * @param {Number} num
+ * @return {String}
+ */
 function prependZero(num) {
   return num < 10 ? '0' + num : num;
 }
 
-function getMinutesHuman(input_seconds) {
-  var zero = function(num) {
-    return num < 10 ? '0' + num : num;
-  };
-  var minutes = Math.floor(input_seconds / 60);
-  return minutes;
+/**
+ * Converts seconds to minutes (rounded)
+ * @param {Number} seconds
+ * @return {Number}
+ */
+function getMinutesHuman(seconds) {
+  return Math.floor(seconds / 60);
 }
 
+/**
+ * Returns true if we are in the PWA app
+ * @return {boolean}
+ */
 function isPWA() {
+  // See manifest.webmanifest - the PAW appends a 'ctx' param
   return window.location.search.indexOf("ctx=pwa") > -1;
 }
 
+/**
+ * Returns true if we are likely on a mobile phone
+ * @return {boolean}
+ */
 function isMobile() {
    if (navigator.userAgent.match(/Android/i)
        || navigator.userAgent.match(/webOS/i)

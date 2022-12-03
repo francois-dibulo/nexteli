@@ -1,7 +1,8 @@
 /**
  * TODO: 
+ * [ ] Fix submit form when no connection candidate found
  * [ ] On remove connection -> load new ones. Remove from itineries array
- * [ ] Loading animation
+ * [ ] Add manual reload button
  */
 
 const STORAGE_KEY = "itineraries";
