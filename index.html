@@ -85,6 +85,7 @@
 	<div class="bg-white-light">
 		<div class="space-lg-2"></div>
 		<div class="w-content margin-auto">
+
 			<h3>Nexteli, for Switzerland🇨🇭</h3>
 			<p class="text-5-vmin">
 		 	Nexteli shows you within seconds when the next train, tram or bus is coming. No need to memorize your daily commutes.
@@ -147,8 +148,8 @@
 	</li>
 </template>
 
-<template id="connection-item">
-	<div class="connection-item w-full flex flex-row align-center justify-center font-black unselectable">
+<template id="departure-slot-item">
+	<departure-slot class="connection-item w-full flex flex-row align-center justify-center font-black unselectable">
 		<div class="min-width-25-vmin flex flex-col align-center justify-center pv-5-vmin align-self-stretch bg-white">
 			<img src="" class="result-icon mb-1-vmin">
 			<div class="result-line font-700"></div>
@@ -161,7 +162,7 @@
 			<div class="result-time font-blue-dark font-700 text-10-vmin"></div>
 			<div class="result-departure-time relative" style="left: -2px;"></div>
 		</div>
-	</div>
+	</departure-slot>
 </template>
 
 <script type="text/javascript" src="src/utils.js"></script>

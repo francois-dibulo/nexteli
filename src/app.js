@@ -1,23 +1,97 @@
 /**
  * TODO: 
- * [ ] Update departure countdown
+ * [ ] On remove connection -> load new ones. Remove from itineries array
  * [ ] Loading animation
  */
 
-class StationComponentElement extends HTMLElement {
+var itineraries = [];
+
+function getItineraryById(id) {
+	for (var i = 0; i < itineraries.length; i++) {
+		if (itineraries[i].getID() === id) {
+			return itineraries[i];
+		}
+	}
+	return null;
+}
+
+class DepartureElement extends HTMLElement {
   
   constructor(label) {
     super();
-    this.data = {
-    	label: this.getAttribute("label")
-    };
+    this.itinerary = {};
+    this.connection = {};
+    var id = this.getAttribute("data-itinerary-id");
+    if (id) {
+    	this.itineraryId = id;
+    	this.itinerary = getItineraryById(id);
+    	try {
+    		var connectionData = this.getAttribute('data-connection-json')
+    		this.connection = JSON.parse(connectionData);
+    	} catch (e) {
+    		console.error(e);
+    	}
+
+    }
   }
 
   connectedCallback() {
   	console.log('Custom square element added to page.', this);
+
+  	const itinerary = this.itinerary;
+  	const connection = this.connection;
   	
-  	var label = document.querySelector(".station-label");
-  	label.textContent = this.data.label;
+  	let line = this.querySelector(".result-line");
+		line.textContent = connection.line;
+		if (itinerary.departure.icon === "tram") {
+			line.textContent = `Tram ${connection.line}`;
+		}
+
+		let time = this.querySelector(".result-time");
+		time.textContent = connection.delta < 60000 ? "now" : connection.delta_str + "'";
+
+		let hour = this.querySelector('.result-departure-time');
+		var departureTime = new Date(connection.departure.date);
+		hour.textContent = departureTime.getHours() + ":" + departureTime.getMinutes();
+
+		let duration = this.querySelector('.result-duration');
+		duration.textContent = "Duration: " + getMinutesHuman(connection.duration) + " mins";
+
+		if (connection.departure.platform) {
+			let platform = this.querySelector(".result-platform");
+			platform.textContent = `Platform ${connection.departure.platform}`;
+		}
+
+		let img = this.querySelector(".result-icon");
+		img.src = `assets/${itinerary.departure.icon}.png`;
+		img.setAttribute("alt", itinerary.departure.icon);
+		img.setAttribute("title", itinerary.departure.icon);
+
+		this.updateConnection();
+	}
+
+	updateConnection() {
+		const now = Date.now();
+
+		const departureTimestamp = this.connection.departure.ts;
+		const delta = departureTimestamp - now;
+		this.connection.delta = delta;
+		this.connection.delta_str = getMinutesHuman(Math.round(delta / 1000))
+
+		let time = this.querySelector(".result-time");
+		time.textContent = delta < 60000 ? "now" : this.connection.delta_str + "'";
+
+		setTimeout(() => {
+			if (this.connection.departure.ts <= now) {
+				this.removeConnection();
+			} else {
+				this.updateConnection();
+			}
+		}, 10000);
+	}
+
+	removeConnection() {
+		this.remove();
 	}
 
 };
@@ -134,8 +208,8 @@ function init() {
 
 	const STORAGE_KEY = "itineraries";
 
-	//customElements.define("station-input", StationComponentElement);
-	var itineraries = [];
+	customElements.define("departure-slot", DepartureElement);
+
 	var currentItinerary = new Itinerary();
 	var stationForm = new StationForm('form-search');
 
@@ -392,37 +466,12 @@ function init() {
 	}
 
 	function renderConnectionItem(itinerary, connection) {
-		const tmpl = document.getElementById('connection-item');
+		const tmpl = document.getElementById('departure-slot-item');
 		const tmplNode = tmpl.content.cloneNode(true);
-
-		let line = tmplNode.querySelector(".result-line");
-		line.textContent = connection.line;
-		if (itinerary.departure.icon === "tram") {
-			line.textContent = `Tram ${connection.line}`;
-		}
-
-		let time = tmplNode.querySelector(".result-time");
-		time.textContent = connection.delta < 60000 ? "now" : connection.delta_str + "'";
-
-		let hour = tmplNode.querySelector('.result-departure-time');
-		var departureTime = new Date(connection.departure.date);
-		hour.textContent = departureTime.getHours() + ":" + departureTime.getMinutes();
-
-		let duration = tmplNode.querySelector('.result-duration');
-		duration.textContent = "Duration: " + getMinutesHuman(connection.duration) + " mins";
-
-		if (connection.departure.platform) {
-			let platform = tmplNode.querySelector(".result-platform");
-			platform.textContent = `Platform ${connection.departure.platform}`;
-		}
-
-		let img = tmplNode.querySelector(".result-icon");
-		img.src = `assets/${itinerary.departure.icon}.png`;
-		img.setAttribute("alt", itinerary.departure.icon);
-		img.setAttribute("title", itinerary.departure.icon);
-
-		return tmplNode;
-		//document.getElementById('result-list').appendChild(tmplNode);
+		let departureSlotEle = tmplNode.querySelector('departure-slot');
+		departureSlotEle.setAttribute('data-itinerary-id', itinerary.getID());
+		departureSlotEle.setAttribute('data-connection-json', JSON.stringify(connection));
+		return departureSlotEle;
 	}
 	
 	stationForm.form.addEventListener('submit', function(e) {
