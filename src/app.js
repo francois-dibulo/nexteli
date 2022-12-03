@@ -306,7 +306,7 @@ function renderConnectionItem(itinerary, connection) {
 function setupServiceWorker() {
 	if ('serviceWorker' in navigator) {
 
-		if (isMobile()) {
+		if (isMobile() && !isPWA()) {
 			document.getElementById("pwa-install-app-container").classList.remove("hidden");
 		}
 

@@ -25,6 +25,10 @@ function getMinutesHuman(input_seconds) {
   return minutes;
 }
 
+function isPWA() {
+  return window.location.search.indexOf("ctx=pwa") > -1;
+}
+
 function isMobile() {
    if (navigator.userAgent.match(/Android/i)
        || navigator.userAgent.match(/webOS/i)

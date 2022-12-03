@@ -9,7 +9,7 @@
     }
   ],
   "id": "/",
-  "start_url": "/",
+  "start_url": "/?ctx=pwa",
   "scope": "/",
   "background_color": "#4763ff",
   "display": "fullscreen",
