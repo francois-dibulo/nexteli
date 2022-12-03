@@ -8,9 +8,9 @@
       "sizes": "512x512"
     }
   ],
-  "id": "/nexteli/",
-  "start_url": "/nexteli/",
-  "scope": "/nexteli/",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "background_color": "#4763ff",
   "display": "fullscreen",
   "theme_color": "#4763ff",
