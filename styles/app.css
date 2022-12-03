@@ -35,6 +35,7 @@ body {
 .font-800 { font-weight: 800; }
 .text-4-vmin { font-size: 4vmin; }
 .text-5-vmin { font-size: 5vmin; }
+.text-small { font-size: 0.8rem; }
 .text-10-vmin { font-size: 10vmin; }
 .margin-auto { margin: auto; }
 .full-vp-min { width: 100vw; min-height: 100vh; }
@@ -82,7 +83,7 @@ input { width: 100%; border: 0; padding:0; margin: 0; }
 .unselectable { user-select: none; }
 
 h1 {
-	font-size: 10vmin;
+	font-size: 7vmin;
 }
 
 button, input {

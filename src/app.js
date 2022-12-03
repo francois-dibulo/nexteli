@@ -216,7 +216,14 @@ function init() {
 	function showForm() {
 		stationForm.reset();
 		currentItinerary = new Itinerary();
+		if (itineraries.length) {
+			document.getElementById('btn-show-connections').classList.toggle('hidden', !itineraries.length);
+		}
 		ViewManager.show('view-search');
+	}
+
+	function showConnections() {
+		ViewManager.show('view-result');
 	}
 
 	function clearAll() {
@@ -381,7 +388,7 @@ function init() {
 	}
 
 	function onStationsSelected(currentItinerary) {
-		ViewManager.show('view-result');
+		showConnections();
 
 		return currentItinerary.updateConnections(currentItinerary)
 			.then(() => {
@@ -527,6 +534,7 @@ function init() {
 	}
 
 	document.getElementById('btn-go-form').addEventListener('click', showForm);
+	document.getElementById('btn-show-connections').addEventListener('click', showConnections);
 
 	setupServiceWorker();
 	ViewManager.init();

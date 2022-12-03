@@ -17,6 +17,7 @@ var ViewManager = {
       this.current_view_id = id;
       this.hideAll();
       view.style.display = block ? "block" : "flex";
+      window.scrollTo(0, 0);
     } else {
       console.warn("Could not find view with ID:", id);
     }
