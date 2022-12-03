@@ -15,187 +15,6 @@ function getItineraryById(id) {
 	return null;
 }
 
-class DepartureElement extends HTMLElement {
-  
-  constructor(label) {
-    super();
-    this.itinerary = {};
-    this.connection = {};
-    var id = this.getAttribute("data-itinerary-id");
-    if (id) {
-    	this.itineraryId = id;
-    	this.itinerary = getItineraryById(id);
-    	try {
-    		var connectionData = this.getAttribute('data-connection-json')
-    		this.connection = JSON.parse(connectionData);
-    	} catch (e) {
-    		console.error(e);
-    	}
-
-    }
-  }
-
-  connectedCallback() {
-  	const itinerary = this.itinerary;
-  	const connection = this.connection;
-  	
-  	let line = this.querySelector(".result-line");
-		line.textContent = connection.line;
-		if (itinerary.departure.icon === "tram") {
-			line.textContent = `Tram ${connection.line}`;
-		}
-
-		let time = this.querySelector(".result-time");
-		time.textContent = connection.delta < 60000 ? "now" : connection.delta_str + "'";
-
-		let hour = this.querySelector('.result-departure-time');
-		var departureTime = new Date(connection.departure.date);
-		hour.textContent = prependZero(departureTime.getHours()) + ":" + prependZero(departureTime.getMinutes());
-
-		let duration = this.querySelector('.result-duration');
-		duration.textContent = "Duration: " + getMinutesHuman(connection.duration) + " mins";
-
-		if (connection.departure.platform) {
-			let platform = this.querySelector(".result-platform");
-			platform.textContent = `Platform ${connection.departure.platform}`;
-		}
-
-		let img = this.querySelector(".result-icon");
-		img.src = `assets/${itinerary.departure.icon}.png`;
-		img.setAttribute("alt", itinerary.departure.icon);
-		img.setAttribute("title", itinerary.departure.icon);
-
-		this.updateConnection();
-	}
-
-	updateConnection() {
-		const now = Date.now();
-
-		if (this.connection.departure.ts <= now) {
-			this.removeConnection();
-			return;
-		}
-
-		this.updateDepartureDelta();
-		setTimeout(this.updateConnection.bind(this), 10000);
-	}
-
-	updateDepartureDelta() {
-		const now = Date.now();
-		const delta = this.connection.departure.ts - now;
-		this.connection.delta = delta;
-		this.connection.delta_str = getMinutesHuman(Math.round(delta / 1000));
-
-		let time = this.querySelector(".result-time");
-		time.textContent = delta < 60000 ? "now" : this.connection.delta_str + "'";
-	}
-
-	removeConnection() {
-		this.remove();
-	}
-
-};
-
-class Itinerary {
-
-	constructor(departure, destination, createdTs) {
-		this.destination = destination || null;
-		this.departure = departure || null;
-		this.createdTs = createdTs || Date.now();
-		this.connections = [];
-		this.lastCachedTs = 0;
-	}
-
-	getID() {
-		return this.departure.id + "::" + this.destination.id;
-	}
-
-	serialize() {
-		return {
-			created: this.createdTs,
-			destination: this.destination,
-			departure: this.departure,
-		};
-	}
-
-	setDestination(destination) {
-		this.destination = destination;
-	}
-
-	setDeparture(departure) {
-		this.departure = departure;
-	}
-
-	cacheExpired() {
-		const CACHE_TIMEOUT = 1000 * 30;
-		return !this.lastCachedTs || (this.lastCachedTs && Date.now() + CACHE_TIMEOUT > this.lastCachedTs);
-	}
-
-	updateConnections(force) {
-		const now = Date.now();
-
-		// Return from Cache
-		if (!force && !this.cacheExpired()) {
-			console.warn("Using cached connectsion", this.connections);
-			return Promise.resolve(this.connections);
-		}
-
-		return findNextDeparture(this)
-			.then((connections) => {
-				this.lastCached = now;
-				this.connections = connections || [];
-			});
-	}
-
-	getNextConnection() {
-		var next = getNextConnection(this.connections);
-		if (!next) {
-			return this.updateConnections()
-				.then(() => getNextConnection(this.connections));
-		}
-		return Promise.resolve(next);
-	}
-
-}
-
-class StationForm {
-
-	constructor(id) {
-		this.state = 'init';
-		this.form = document.forms[id];
-	}
-
-	reset() {
-		this.toggleSubmitButton(false);
-		this.form['destination'].value = '';
-		this.form['departure'].value = '';
-
-		var lists = [
-			document.getElementById('departureCandidatesList'),
-			document.getElementById('destinationCandidatesList')
-		];
-
-		for (var i = 0; i < lists.length; ++i) {
-			var node = lists[i];
-			node.classList.remove('hidden');
-			node.innerHTML = '';
-		}
-	}
-
-	setDeparture(value) {
-		this.form['departure'].value = value;
-	}
-
-	setDestination(value) {
-		this.form['destination'].value = value;
-	}
-
-	toggleSubmitButton(state) {
-		this.form['submit'].classList.toggle('hidden', state);
-	}
-
-}
-
 function onConnectionListNavInput(e, direction) {
 	var listEle = e.parentNode.querySelector('.result-connections-list');
 	//listEle.children[1].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -203,12 +22,15 @@ function onConnectionListNavInput(e, direction) {
 	listEle.scrollTo(distance, 0);
 }
 
+function updateItinerary() {
+	itinerary.getNextConnection();
+}
 
 function init() {
 
 	const STORAGE_KEY = "itineraries";
 
-	customElements.define("departure-slot", DepartureElement);
+	customElements.define("departure-slot", DepartureSlotElement);
 
 	var currentItinerary = new Itinerary();
 	var stationForm = new StationForm('form-search');
