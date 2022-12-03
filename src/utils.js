@@ -13,6 +13,10 @@ function getFormatedSeconds(input_seconds) {
   return zero(minutes) + ':' + zero(seconds);
 }
 
+function prependZero(num) {
+  return num < 10 ? '0' + num : num;
+}
+
 function getMinutesHuman(input_seconds) {
   var zero = function(num) {
     return num < 10 ? '0' + num : num;

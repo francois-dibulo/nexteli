@@ -50,7 +50,7 @@ class DepartureElement extends HTMLElement {
 
 		let hour = this.querySelector('.result-departure-time');
 		var departureTime = new Date(connection.departure.date);
-		hour.textContent = departureTime.getHours() + ":" + departureTime.getMinutes();
+		hour.textContent = prependZero(departureTime.getHours()) + ":" + prependZero(departureTime.getMinutes());
 
 		let duration = this.querySelector('.result-duration');
 		duration.textContent = "Duration: " + getMinutesHuman(connection.duration) + " mins";
