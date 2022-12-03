@@ -36,8 +36,6 @@ class DepartureElement extends HTMLElement {
   }
 
   connectedCallback() {
-  	console.log('Custom square element added to page.', this);
-
   	const itinerary = this.itinerary;
   	const connection = this.connection;
   	
@@ -73,21 +71,23 @@ class DepartureElement extends HTMLElement {
 	updateConnection() {
 		const now = Date.now();
 
-		const departureTimestamp = this.connection.departure.ts;
-		const delta = departureTimestamp - now;
+		if (this.connection.departure.ts <= now) {
+			this.removeConnection();
+			return;
+		}
+
+		this.updateDepartureDelta();
+		setTimeout(this.updateConnection.bind(this), 10000);
+	}
+
+	updateDepartureDelta() {
+		const now = Date.now();
+		const delta = this.connection.departure.ts - now;
 		this.connection.delta = delta;
-		this.connection.delta_str = getMinutesHuman(Math.round(delta / 1000))
+		this.connection.delta_str = getMinutesHuman(Math.round(delta / 1000));
 
 		let time = this.querySelector(".result-time");
 		time.textContent = delta < 60000 ? "now" : this.connection.delta_str + "'";
-
-		setTimeout(() => {
-			if (this.connection.departure.ts <= now) {
-				this.removeConnection();
-			} else {
-				this.updateConnection();
-			}
-		}, 10000);
 	}
 
 	removeConnection() {
