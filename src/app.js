@@ -1,6 +1,5 @@
 /**
  * TODO: 
- * [ ] Fix submit form when no connection candidate found
  * [ ] On remove connection -> load new ones. Remove from itineries array
  * [ ] Add manual reload button
  */
