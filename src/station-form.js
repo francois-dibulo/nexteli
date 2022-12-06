@@ -21,6 +21,13 @@ class StationForm {
       node.classList.remove('hidden');
       node.innerHTML = '';
     }
+
+    this.resetAlerts();
+  }
+
+  resetAlerts() {
+    document.getElementById('departureNoCandidateAlert').classList.add('hidden');
+    document.getElementById('destinationNoCandidateAlert').classList.add('hidden');
   }
 
   setDeparture(value) {

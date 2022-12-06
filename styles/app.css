@@ -75,6 +75,7 @@ input { width: 100%; border: 0; padding:0; margin: 0; }
 .bg-blue { background: #4763ff; }
 .bg-blue-light { background: #2196f3; }
 .bg-green { background: #8bc34a; }
+.bg-alert { background: #7b0606; }
 .font-black { color: #777; }
 .font-white { color: #FFF; }
 .font-blue-dark { color: #3f51b5; }

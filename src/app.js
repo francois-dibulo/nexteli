@@ -144,13 +144,23 @@ function searchStations(departure, destination) {
 
 					if (departureCandidates && departureCandidates.length) {
 						fillCandidatesList(document.getElementById('departureCandidatesList'), departureCandidates, true);
+					} else {
+						document.getElementById('departureNoCandidateAlert').classList.remove('hidden');
 					}
 
-					if (departureCandidates && departureCandidates.length) {
+					if (destinationCandidates && destinationCandidates.length) {
 						fillCandidatesList(document.getElementById('destinationCandidatesList'), destinationCandidates, false);
+					} else {
+						document.getElementById('destinationNoCandidateAlert').classList.remove('hidden');
 					}
 
-					resolve(true);
+					if (departureCandidates && departureCandidates.length &&
+								destinationCandidates && destinationCandidates.length) {
+						resolve(true);
+					} else {
+						// No results found
+						resolve(false);
+					}
 
 				});
 		});
@@ -345,8 +355,10 @@ function init() {
 	stationForm = new StationForm('form-search');
 
 	stationForm.form.addEventListener('submit', function(e) {
-		const departure = e.target.departure.value.trim();
-		const destination = e.target.destination.value.trim();
+		const departure 	= correctStationName(e.target.departure.value.trim());
+		const destination = correctStationName(e.target.destination.value.trim());
+
+		stationForm.resetAlerts();
 
 		if (departure && destination) {
 			searchStations(departure, destination)

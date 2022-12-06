@@ -36,6 +36,12 @@
 				class="ul-no-style mt-05-rem">
 			</ul>
 
+			<div
+				id="departureNoCandidateAlert"
+				class="bg-alert text-center p-2-vmin hidden">
+				Could not find any stations!
+			</div>
+
 			<div class="space-lg"></div>
 
 			<label class="display-block font-300 mb-05-rem">To:</label>
@@ -46,7 +52,15 @@
 				required
 				autocomplete="off">
 
-			<ul id="destinationCandidatesList" class="ul-no-style mt-05-rem"></ul>
+			<ul
+				id="destinationCandidatesList"
+				class="ul-no-style mt-05-rem">
+			</ul>
+
+			<div id="destinationNoCandidateAlert"
+				class="bg-alert text-center p-2-vmin hidden">
+				Could not find any stations!
+			</div>
 
 			<div class="space-lg-2"></div>
 			<button name="submit" class="primary btn-shadow" type="submit">Search</button>

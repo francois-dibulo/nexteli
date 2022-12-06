@@ -78,3 +78,10 @@ function getNextConnection(connections) {
 
 	return next;
 }
+
+function correctStationName(name) {
+	if (name && name.toLowerCase().indexOf("zurich") > -1) {
+		return name.replace("zurich", "zürich");
+	}
+	return name;
+}
